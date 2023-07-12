@@ -1,3 +1,5 @@
 /DataToCSV/searchStringsToCSV.py
 /DataToCSV/stringsForModifiers.py
 /Data/
+/DataCollection/webScraper/stringsForScraper.py
+/DataCollection/webScraper/searchFunctions.py
