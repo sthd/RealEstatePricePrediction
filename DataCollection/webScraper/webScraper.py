@@ -9,6 +9,7 @@ import time
 import stringsForScraper as st_scraper
 import scraperAuxFunctions as saux
 import searchFunctions
+
 class WebsiteScraper:
     def __init__(self, driver_path):
         self.driver_path = driver_path
@@ -16,6 +17,8 @@ class WebsiteScraper:
         self.wait = None
         self.refresh = 0
         self.search_function = None
+        self.searcher = None
+
     def start(self, URL, wait=15):
         service = Service(self.driver_path)
         self.driver = webdriver.Chrome(service=service)
@@ -28,6 +31,9 @@ class WebsiteScraper:
 
     def set_search_function(self, search_function):
         self.search_function = search_function
+
+    def set_searcher(self, searcher):
+        self.searcher = searcher
 
     def search(self):
         self.search_function(self.driver)
@@ -49,3 +55,9 @@ if __name__ == '__main__':
     scraper.set_search_function(searchFunctions.search_moss)
     scraper.search()
     scraper.close()
+
+
+
+    end = time.time()
+    total_time = end - start
+    print(f"\nCode Execution for all scrapers took {total_time}")

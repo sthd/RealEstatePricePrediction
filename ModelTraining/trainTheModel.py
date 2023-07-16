@@ -1,7 +1,11 @@
+import os
+
 import numpy as np
+import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
+
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 
@@ -27,27 +31,55 @@ class MLModel:
     def predict(self, X_test):
         return self.model.predict(X_test)
 
-def custom_train_test_split(ratio : float = 0.8):
+
+
+
+def custom_train_test_split(x, y, ratio : float = 0.8):
     checkInputType(ratio, float)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size= 1-ratio, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size= 1-ratio, random_state=42)
     return X_train, X_test, y_train, y_test
 
+def saveToPikle(element, filename, overwrite=False):
+        if os.path.exists(filename) and not overwrite:
+            print(f"{filename} already exists. Element is not saved.")
+            return
+
+        with open(filename, 'wb') as file:
+            pickle.dump(element, file)
+        print(f"{filename} Element saved successfully.")
+
+def loadFromPikle(filename):
+    if os.path.exists(filename):
+        # Load the elements from the file
+        with open(filename, 'rb') as file:
+            loaded_element = pickle.load(file)
+            print(f"{filename} Element is loaded successfully.")
+            return loaded_element
+    else:
+        print(f"{filename} does not exist. Element is not loaded.")
 
 
 
 if __name__ == '__main__':
     print("hi")
-    X = np.random.rand(100, 2)
+    x = np.random.rand(100, 2)
     y = np.random.rand(100)
 
-X_train, X_test, y_train, y_test = custom_train_test_split()
-print(f"{X_train} \n and \n {y_train}  \n and \n {X_test} \n and \n {y_test}")
+    X_train, X_test, y_train, y_test = custom_train_test_split(x, y)
+    #print(f"{X_train} \n and \n {y_train}  \n and \n {X_test} \n and \n {y_test}")
 
-lr_model = MLModel("linear_regression")
-lr_model.train(X_train, y_train)
+    lr_model = MLModel("linear_regression")
+    lr_model.train(X_train, y_train)
+    y_pred_lr = lr_model.predict(X_test)
+    print(f"original is {y_pred_lr}")
+    rf_model = MLModel("random_forest")
+    rf_model.train(X_train, y_train)
+    y_pred_rf = rf_model.predict(X_test)
 
-y_pred_linear_regression = lr_model.predict(X_test)
+    filename = 'linear_regression_model.pkl'
 
-rf_model = MLModel("random_forest")
-rf_model.train(X_train, y_train)
-y_pred_random_forest = rf_model.predict(X_test)
+    saveToPikle(lr_model, filename, True)
+    loaded_model = loadFromPikle(filename)
+
+    y_pred_lr = loaded_model.predict(X_test)
+    print(f"loaded is {y_pred_lr}")
