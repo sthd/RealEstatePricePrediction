@@ -76,10 +76,16 @@ if __name__ == '__main__':
     rf_model.train(X_train, y_train)
     y_pred_rf = rf_model.predict(X_test)
 
-    filename = 'linear_regression_model.pkl'
 
-    saveToPikle(lr_model, filename, True)
-    loaded_model = loadFromPikle(filename)
+    element_filename_boolean_pairs = [
+        (lr_model, "lr_model.pkl", True),
+        (rf_model, "rf_model.pkl", False),
+        ({"name": "John", "age": 30}, "file3.pkl", True)
+    ]
 
+    for element, filename, flag in element_filename_boolean_pairs:
+        saveToPikle(element, filename, flag)
+
+    loaded_model = loadFromPikle("lr_model.pkl")
     y_pred_lr = loaded_model.predict(X_test)
     print(f"loaded is {y_pred_lr}")
